@@ -1,5 +1,71 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: Inter;
+  src: url("./assets/fonts/Inter.ttf");
+}
+
+@font-face {
+  font-family: Inter;
+  font-style: italic;
+  src: url("./assets/fonts/Inter-italic.ttf");
+}
+
+@theme {
+  --color-surface-low: oklch(0.1 0 0);
+  --color-surface-med: oklch(0.28 0 0);
+  --color-surface-high: oklch(0.34 0 0);
+  --color-surface-xhigh: oklch(0.37 0 0);
+  --color-text: oklch(1 0 0);
+  --color-accent: oklch(0.482 0.2977 277.22);
+  --color-accent-dark: oklch(0.382 0.2977 277.22);
+  --color-accent-light: oklch(0.582 0.2977 277.22);
+  --font-sans: Inter;
+  --ease-smooth: cubic-bezier(.72,.08,.3,.98);
+  --animate-pan-r: pan-r 1.5s var(--ease-smooth);
+  --animate-pan-l: pan-l 1.5s var(--ease-smooth);
+}
+
 :root {
-  @apply bg-black;
+  @apply bg-surface-low text-text;
+}
+
+body {
+  @apply max-w-screen-lg mx-auto px-4 py-0;
+}
+
+.primary {
+  @apply rounded-xl bg-linear-0 from-accent-dark to-accent-light border-3 border-accent-light px-2 py-1 text-xl font-semibold transition-transform duration-100 hover:scale-102 active:bg-linear-180 active:transition-none! active:scale-98 active:opacity-80;
+}
+
+.secondary {
+  @apply rounded-xl bg-linear-0 from-surface-med to-surface-high border-3 border-surface-xhigh px-2 py-1 text-xl font-semibold transition-transform duration-100 hover:scale-102 active:bg-linear-180 active:transition-none! active:scale-98 active:opacity-80;
+}
+
+button {
+  @apply cursor-pointer mr-1.5;
+}
+
+@keyframes pan-r {
+  0% {
+    opacity: 0;
+    transform: translateX(-70px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+}
+
+@keyframes pan-l {
+  0% {
+    opacity: 0;
+    transform: translateX(70px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0px);
+  }
 }

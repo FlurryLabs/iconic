@@ -21,9 +21,9 @@
   --color-accent-dark: oklch(0.382 0.2977 277.22);
   --color-accent-light: oklch(0.582 0.2977 277.22);
   --font-sans: Inter;
-  --ease-smooth: cubic-bezier(.72,.08,.3,.98);
-  --animate-pan-r: pan-r 1.5s var(--ease-smooth);
-  --animate-pan-l: pan-l 1.5s var(--ease-smooth);
+  --ease-smooth: cubic-bezier(.72, .08, .3, .98);
+  --animate-pan-r: pan-r 1s var(--ease-smooth);
+  --animate-pan-l: pan-l 1s var(--ease-smooth);
 }
 
 :root {
@@ -46,10 +46,14 @@ button {
   @apply cursor-pointer mr-1.5;
 }
 
+input[type="range"] {
+  @apply accent-accent;
+}
+
 @keyframes pan-r {
   0% {
     opacity: 0;
-    transform: translateX(-70px);
+    transform: translateX(-30px);
   }
 
   100% {
@@ -61,11 +65,15 @@ button {
 @keyframes pan-l {
   0% {
     opacity: 0;
-    transform: translateX(70px);
+    transform: translateX(30px);
   }
 
   100% {
     opacity: 1;
     transform: translateX(0px);
   }
+}
+
+.toolbarBtn {
+  @apply block overflow-clip h-full w-auto aspect-square;
 }

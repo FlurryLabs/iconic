@@ -1,11 +1,28 @@
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 
 export default function Editor() {
-    const gridSizeRef = useRef(null);
+    const [gridSize, setGridSize] = useState(8);
     const [currentTool, setCurrentTool] = useState("Circle");
     const canvasRef = useRef(null);
 
+    const canvasSize = 256;
 
+    useEffect(() => {
+        if (canvasRef.current) {
+            canvasRef.current.innerHTML = ""
+            console.log(gridSize)
+            const gridUnit = canvasSize / gridSize;
+            for (let gx = 0; gx <= gridSize; gx++) {
+                canvasRef.current.innerHTML += `
+                    <line x1=${gx * gridUnit} y1=${0} x2=${(gx) * gridUnit} y2=${canvasSize} stroke="${gx == gridSize / 2 ?  'rgba(0, 255, 0, 0.2)" stroke-width="2"' : 'rgba(255, 255, 255, 0.1)" stroke-width="1"'}></line>`
+            }
+            for (let gy = 0; gy <= gridSize; gy++) {
+                canvasRef.current.innerHTML += `
+                    <line x1=${0} y1=${gy * gridUnit} x2=${canvasSize} y2=${gy * gridUnit} stroke="${gy == gridSize / 2 ?  'rgba(255, 0, 0, 0.2)" stroke-width="2"' : 'rgba(255, 255, 255, 0.1)" stroke-width="1"'}></line>`
+            }
+
+        }
+    }, [gridSize]);
 
     return (
         <>
@@ -22,7 +39,7 @@ export default function Editor() {
                         <div>Grid size</div>
                         <div className="flex gap-2">
                             <div className="font-mono">4x4</div>
-                            <input ref={gridSizeRef} type="range" min={4} max={16} step={4} defaultValue={8} className="flex-1" />
+                            <input onInput={(e) => { setGridSize(e.target.value) }} type="range" min={4} max={16} step={4} defaultValue={8} className="flex-1" />
                             <div className="font-mono">16x16</div>
 
                         </div>
@@ -31,7 +48,7 @@ export default function Editor() {
                 <div className="flex-1">
                     <div className="w-full h-90">
                         <div className="aspect-square h-full bg-surface-med mx-auto">
-                            <svg ref={canvasRef} width={256} height={256}>
+                            <svg ref={canvasRef} width={canvasSize} height={canvasSize} className="w-full h-full" viewBox={`0 0 ${canvasSize} ${canvasSize}`} preserveAspectRatio="none">
 
                             </svg>
                         </div>

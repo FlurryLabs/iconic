@@ -50,6 +50,10 @@ input[type="range"] {
   @apply accent-accent;
 }
 
+hr{
+  @apply border-1 border-surface-high mx-1 mt-2 mb-2;
+}
+
 @keyframes pan-r {
   0% {
     opacity: 0;

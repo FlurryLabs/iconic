@@ -5,24 +5,74 @@ export default function Editor() {
     const [currentTool, setCurrentTool] = useState("Circle");
     const canvasRef = useRef(null);
 
+    const [cursorDat, setCursorDat] = useState({
+        start: [0, 0],
+        end: [0, 0],
+        offset: {
+            position: [0, 0],
+            scale: [0, 0],
+        },
+        mouseDown: false,
+    })
+
+    const [projectDat, setProjectDat] = useState({
+        guides: []
+    })
+
     const canvasSize = 256;
 
     useEffect(() => {
+        const controller = new AbortController();
+
         if (canvasRef.current) {
             canvasRef.current.innerHTML = ""
-            console.log(gridSize)
             const gridUnit = canvasSize / gridSize;
             for (let gx = 0; gx <= gridSize; gx++) {
                 canvasRef.current.innerHTML += `
-                    <line x1=${gx * gridUnit} y1=${0} x2=${(gx) * gridUnit} y2=${canvasSize} stroke="${gx == gridSize / 2 ?  'rgba(0, 255, 0, 0.2)" stroke-width="2"' : 'rgba(255, 255, 255, 0.1)" stroke-width="1"'}></line>`
+                    <line x1=${gx * gridUnit} y1=${0} x2=${(gx) * gridUnit} y2=${canvasSize} stroke="${gx == gridSize / 2 ? 'rgba(0, 255, 0, 0.2)" stroke-width="2"' : 'rgba(255, 255, 255, 0.1)" stroke-width="1"'}></line>`
             }
             for (let gy = 0; gy <= gridSize; gy++) {
                 canvasRef.current.innerHTML += `
-                    <line x1=${0} y1=${gy * gridUnit} x2=${canvasSize} y2=${gy * gridUnit} stroke="${gy == gridSize / 2 ?  'rgba(255, 0, 0, 0.2)" stroke-width="2"' : 'rgba(255, 255, 255, 0.1)" stroke-width="1"'}></line>`
+                    <line x1=${0} y1=${gy * gridUnit} x2=${canvasSize} y2=${gy * gridUnit} stroke="${gy == gridSize / 2 ? 'rgba(255, 0, 0, 0.2)" stroke-width="2"' : 'rgba(255, 255, 255, 0.1)" stroke-width="1"'}></line>`
             }
 
+            canvasRef.current.addEventListener("mousedown", (e) => {
+                const canvasBox = canvasRef.current.getBoundingClientRect();
+                setCursorDat((prev) => ({
+                    ...prev,
+                    start: [e.clientX, e.clientY],
+                    offset: {
+                        position: [canvasBox.left, canvasBox.top],
+                        scale: [canvasBox.width, canvasBox.height],
+                    },
+                    mouseDown: true,
+                }))
+            }, { signal: controller.signal })
+
         }
-    }, [gridSize]);
+
+        window.addEventListener("mousemove", (e) => {
+            if (cursorDat.mouseDown === true) {
+                setCursorDat((prev) => ({
+                    ...prev,
+                    end: [e.clientX, e.clientY],
+                }))
+            }
+
+        }, { signal: controller.signal })
+
+
+        window.addEventListener("mouseup", () => {
+            setCursorDat((prev) => ({
+                ...prev,
+                mouseDown: false,
+            }))
+        }, { signal: controller.signal })
+
+        return () => {
+            controller.abort();
+        }
+    }, [gridSize, cursorDat]);
 
     return (
         <>
@@ -34,9 +84,10 @@ export default function Editor() {
 
             <div className="flex flex-row w-full pt-12 h-full">
                 <div className="w-70 border-r-2 border-r-surface-med pr-3">
-                    <h2 className="text-3xl font-semibold">Project</h2>
+                    <h2 className="text-3xl font-semibold">Editor settings</h2>
+                    <hr />
                     <div>
-                        <div>Grid size</div>
+                        <div>Grid guide size</div>
                         <div className="flex gap-2">
                             <div className="font-mono">4x4</div>
                             <input onInput={(e) => { setGridSize(e.target.value) }} type="range" min={4} max={16} step={4} defaultValue={8} className="flex-1" />

@@ -15,18 +15,21 @@ export default function Editor() {
         mouseDown: false,
     })
 
+    const [shapePreview, setShapePreview] = useState("")
+
     const [projectDat, setProjectDat] = useState({
-        guides: []
+        guides: [],
     })
 
     const canvasSize = 256;
 
     useEffect(() => {
         const controller = new AbortController();
+        const gridUnit = canvasSize / gridSize;
 
         if (canvasRef.current) {
             canvasRef.current.innerHTML = ""
-            const gridUnit = canvasSize / gridSize;
+
             for (let gx = 0; gx <= gridSize; gx++) {
                 canvasRef.current.innerHTML += `
                     <line x1=${gx * gridUnit} y1=${0} x2=${(gx) * gridUnit} y2=${canvasSize} stroke="${gx == gridSize / 2 ? 'rgba(0, 255, 0, 0.2)" stroke-width="2"' : 'rgba(255, 255, 255, 0.1)" stroke-width="1"'}></line>`
@@ -36,27 +39,47 @@ export default function Editor() {
                     <line x1=${0} y1=${gy * gridUnit} x2=${canvasSize} y2=${gy * gridUnit} stroke="${gy == gridSize / 2 ? 'rgba(255, 0, 0, 0.2)" stroke-width="2"' : 'rgba(255, 255, 255, 0.1)" stroke-width="1"'}></line>`
             }
 
+
             canvasRef.current.addEventListener("mousedown", (e) => {
                 const canvasBox = canvasRef.current.getBoundingClientRect();
                 setCursorDat((prev) => ({
                     ...prev,
-                    start: [e.clientX, e.clientY],
+                    start: [
+                        Math.round(((e.clientX - canvasBox.left) * (canvasSize / canvasBox.width)) / gridUnit) * gridUnit,
+                        Math.round(((e.clientY - canvasBox.top) * (canvasSize / canvasBox.height)) / gridUnit) * gridUnit,
+                    ],
                     offset: {
                         position: [canvasBox.left, canvasBox.top],
                         scale: [canvasBox.width, canvasBox.height],
                     },
                     mouseDown: true,
                 }))
+
+                console.log(
+                    Math.round(((e.clientX - canvasBox.left) * (canvasSize / canvasBox.width)) / gridUnit) * gridUnit,
+                    Math.round(((e.clientY - canvasBox.top) * (canvasSize / canvasBox.height)) / gridUnit) * gridUnit,
+                )
+
             }, { signal: controller.signal })
 
+            canvasRef.current.innerHTML += shapePreview;
         }
 
         window.addEventListener("mousemove", (e) => {
             if (cursorDat.mouseDown === true) {
                 setCursorDat((prev) => ({
                     ...prev,
-                    end: [e.clientX, e.clientY],
-                }))
+                    end: [
+                        Math.round((e.clientX - prev.offset.position[0]) * (canvasSize / prev.offset.scale[0]) / gridUnit) * gridUnit,
+                        Math.round((e.clientY - prev.offset.position[1]) * (canvasSize / prev.offset.scale[0]) / gridUnit) * gridUnit
+                    ],
+                }));
+
+                switch (currentTool) {
+                    case "Circle":
+                        setShapePreview(`<rect x="${cursorDat.start[0]}" y="${cursorDat.start[1]}" width="${cursorDat.end[0] - cursorDat.start[0]}" height="${cursorDat.end[1] - cursorDat.start[1]}" stroke="rgba(255, 255, 255, 0.5)" stroke-width="3" fill="transparent" />`)
+                        break;
+                }
             }
 
         }, { signal: controller.signal })

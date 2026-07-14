@@ -76,8 +76,10 @@ export default function Editor() {
                 }));
 
                 switch (currentTool) {
-                    case "Circle":
-                        setShapePreview(`<rect x="${cursorDat.start[0]}" y="${cursorDat.start[1]}" width="${cursorDat.end[0] - cursorDat.start[0]}" height="${cursorDat.end[1] - cursorDat.start[1]}" stroke="rgba(255, 255, 255, 0.5)" stroke-width="3" fill="transparent" />`)
+                    case "Rectangle":
+                        setShapePreview(`<rect x="${Math.min(cursorDat.start[0], cursorDat.end[0])}" y="${Math.min(cursorDat.start[1], cursorDat.end[1])}" width="${Math.abs(cursorDat.end[0] - cursorDat.start[0]) + 1}" height="${Math.abs(cursorDat.end[1] - cursorDat.start[1]) + 1}" stroke="rgba(255, 255, 255, 0.5)" stroke-width="3" fill="transparent" stroke-dasharray="10 10">
+                        <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite" />
+                        </rect>`)
                         break;
                 }
             }

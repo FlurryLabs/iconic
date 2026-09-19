@@ -113,11 +113,11 @@ export default function Editor() {
                     <hr />
                     <div>
                         <div>Grid guide size</div>
-                        <div className="flex gap-2">
-                            <div className="font-mono">4x4</div>
-                            <input onInput={(e) => { setGridSize(e.target.value) }} type="range" min={4} max={16} step={4} defaultValue={8} className="flex-1" />
-                            <div className="font-mono">16x16</div>
-
+                        <input onInput={(e) => { setGridSize([4, 8, 16][Number(e.target.value) - 1]) }} type="range" min={1} max={3} defaultValue={2} className="w-full" />
+                        <div className="flex flex-row w-full opacity-50">
+                            <div className="font-mono flex-1 text-left">4x4</div>
+                            <div className="font-mono flex-1 text-center">8x8</div>
+                            <div className="font-mono flex-1 text-right">16x16</div>
                         </div>
                     </div>
                 </div>

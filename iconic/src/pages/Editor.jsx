@@ -81,6 +81,12 @@ export default function Editor() {
                         <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite" />
                         </rect>`)
                         break;
+
+                    case "Line":
+                        setShapePreview(`<line x1="${Math.min(cursorDat.start[0])}" y1="${Math.min(cursorDat.start[1])}" x2="${Math.min(cursorDat.end[0])}" y2="${Math.min(cursorDat.end[1])}" width="${Math.abs(cursorDat.end[0] - cursorDat.start[0]) + 1}" height="${Math.abs(cursorDat.end[1] - cursorDat.start[1]) + 1}" stroke="rgba(255, 255, 255, 0.5)" stroke-width="3" fill="transparent" stroke-dasharray="10 10">
+                        <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite" />
+                        </line>`)
+                        break;
                 }
             }
 
@@ -97,7 +103,7 @@ export default function Editor() {
         return () => {
             controller.abort();
         }
-    }, [gridSize, cursorDat]);
+    }, [gridSize, cursorDat, currentTool, shapePreview]);
 
     return (
         <>

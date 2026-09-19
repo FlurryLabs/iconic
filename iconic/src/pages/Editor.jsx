@@ -83,9 +83,21 @@ export default function Editor() {
                         break;
 
                     case "Line":
-                        setShapePreview(`<line x1="${Math.min(cursorDat.start[0])}" y1="${Math.min(cursorDat.start[1])}" x2="${Math.min(cursorDat.end[0])}" y2="${Math.min(cursorDat.end[1])}" width="${Math.abs(cursorDat.end[0] - cursorDat.start[0]) + 1}" height="${Math.abs(cursorDat.end[1] - cursorDat.start[1]) + 1}" stroke="rgba(255, 255, 255, 0.5)" stroke-width="3" fill="transparent" stroke-dasharray="10 10">
+                        setShapePreview(`<line x1="${cursorDat.start[0]}" y1="${cursorDat.start[1]}" x2="${cursorDat.end[0]}" y2="${cursorDat.end[1]}" stroke="rgba(255, 255, 255, 0.5)" stroke-width="3" fill="transparent" stroke-dasharray="10 10">
                         <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite" />
                         </line>`)
+                        break;
+
+                    case "Ellipse":
+                        setShapePreview(`<ellipse cx="${cursorDat.start[0]}" cy="${cursorDat.start[1]}" rx="${Math.abs(cursorDat.end[0] - cursorDat.start[0])}" ry="${Math.abs(cursorDat.end[1] - cursorDat.start[1])}" stroke="rgba(255, 255, 255, 0.5)" stroke-width="3" fill="transparent" stroke-dasharray="10 10">
+                        <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite" />
+                        </ellipse>`)
+                        break;
+
+                    case "Circle":
+                        setShapePreview(`<ellipse cx="${cursorDat.start[0]}" cy="${cursorDat.start[1]}" rx="${Math.abs(Math.max(cursorDat.end[0] - cursorDat.start[0], cursorDat.end[1] - cursorDat.start[1]))}" ry="${Math.abs(Math.max(cursorDat.end[0] - cursorDat.start[0], cursorDat.end[1] - cursorDat.start[1]))}" stroke="rgba(255, 255, 255, 0.5)" stroke-width="3" fill="transparent" stroke-dasharray="10 10">
+                        <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite" />
+                        </ellipse>`)
                         break;
                 }
             }
@@ -141,8 +153,11 @@ export default function Editor() {
                             setCurrentTool("Circle");
                         }} className={`toolbarBtn ${currentTool == "Circle" ? " primary" : "secondary"}`}>Circle</button>
                         <button onMouseDown={() => {
+                            setCurrentTool("Ellipse");
+                        }} className={`toolbarBtn ${currentTool == "Ellipse" ? " primary" : "secondary"}`}>Ellipse</button>
+                        <button onMouseDown={() => {
                             setCurrentTool("Rectangle");
-                        }} className={`toolbarBtn ${currentTool == "Rectangle" ? " primary" : "secondary"}`}>Rectangle</button>
+                        }} className={`toolbarBtn ${currentTool == "Rectangle" ? " primary" : "secondary"}`}>Rect</button>
                         <button onMouseDown={() => {
                             setCurrentTool("Line");
                         }} className={`toolbarBtn ${currentTool == "Line" ? " primary" : "secondary"}`}>Line</button>
